@@ -448,6 +448,8 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
         return NO;
     }
  
+    if ([asset creationDate] != nil) fetch_item.creationDate = [asset creationDate];
+    
     if ( fetch_item.be_saving_img == false && fetch_item.image_fullsize == nil  ) {
         
         fetch_item.be_progressed = true;
