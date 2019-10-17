@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="multi_app_name">MultiImageChooser</string>
+    <string name="free_version_label">Free version - Images left: %d</string>
+    <string name="error_database">S’ha produït un error mentre s’obrien les imatges</string>
+    <string name="requesting_thumbnails">S’estan generant les miniatures, esperi si us plau.</string>
+    <string name="multi_image_picker_processing_images_title">Processant les imatges</string>
+    <string name="multi_image_picker_processing_images_message">Pot trigar una estona</string>
+    <string name="discard">Cancel·la</string>
+    <string name="done">D’acord</string>
+</resources>
