@@ -76,6 +76,7 @@
         <resource-file src="src/ios/GMImagePicker/de.lproj" />
         <resource-file src="src/ios/GMImagePicker/en.lproj" />
         <resource-file src="src/ios/GMImagePicker/es.lproj" />
+        <resource-file src="src/ios/GMImagePicker/eu.lproj" />
         <resource-file src="src/ios/GMImagePicker/fr.lproj" />
         <resource-file src="src/ios/GMImagePicker/it.lproj" />
         <resource-file src="src/ios/GMImagePicker/pt.lproj" />
@@ -138,8 +139,10 @@
         <resource-file src="src/android/Library/res/values/multiimagechooser_strings_en.xml" target="res/values/multiimagechooser_strings_en.xml"/>
         <resource-file src="src/android/Library/res/values/themes.xml" target="res/values/themes.xml"/>
 
+        <resource-file src="src/android/Library/res/values-ca/multiimagechooser_strings_ca.xml" target="res/values-ca/multiimagechooser_strings_ca.xml"/>
         <resource-file src="src/android/Library/res/values-de/multiimagechooser_strings_de.xml" target="res/values-de/multiimagechooser_strings_de.xml"/>
         <resource-file src="src/android/Library/res/values-es/multiimagechooser_strings_es.xml" target="res/values-es/multiimagechooser_strings_es.xml"/>
+        <resource-file src="src/android/Library/res/values-eu/multiimagechooser_strings_eu.xml" target="res/values-eu/multiimagechooser_strings_eu.xml"/>
         <resource-file src="src/android/Library/res/values-fr/multiimagechooser_strings_fr.xml" target="res/values-fr/multiimagechooser_strings_fr.xml"/>
         <resource-file src="src/android/Library/res/values-hu/multiimagechooser_strings_hu.xml" target="res/values-hu/multiimagechooser_strings_hu.xml"/>
         <resource-file src="src/android/Library/res/values-ja/multiimagechooser_strings_ja.xml" target="res/values-ja/multiimagechooser_strings_ja.xml"/>

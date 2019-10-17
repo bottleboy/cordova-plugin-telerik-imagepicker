@@ -23,4 +23,6 @@
 @property (nonatomic, assign) bool be_saving_img_thumb;
 @property (nonatomic, assign) bool be_saving_img;
 
+@property (nonatomic, strong, nullable) NSDate * creationDate;
+
 @end

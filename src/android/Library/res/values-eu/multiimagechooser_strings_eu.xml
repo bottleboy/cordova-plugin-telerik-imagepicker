@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="multi_app_name">MultiImageChooser</string>
+    <string name="requesting_thumbnails">Miniaturak sortzen ari gara, izan pazientzia</string>
+    <string name="free_version_label">Versión gratuita - Imágenes restantes: %d</string>
+    <string name="error_database">Errore bat gertatu da irudiak zabaltzerakoan</string>
+    <string name="multi_image_picker_processing_images_title">Irudiak prozesatzen</string>
+    <string name="multi_image_picker_processing_images_message">Minutu batzuk beharko ditu, agian</string>
+    <string name="discard">Cancelar</string>
+    <string name="done">OK</string>
+</resources>

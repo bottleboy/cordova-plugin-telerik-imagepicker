@@ -37,8 +37,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -82,6 +87,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import org.json.JSONArray;
 
 public class MultiImageChooserActivity extends AppCompatActivity implements
         OnItemClickListener,
@@ -517,13 +524,13 @@ public class MultiImageChooserActivity extends AppCompatActivity implements
         }
     }
 
-    private class ResizeImagesTask extends AsyncTask<Set<Entry<String, Integer>>, Void, ArrayList<String>> {
+    private class ResizeImagesTask extends AsyncTask<Set<Entry<String, Integer>>, Void, ArrayList<Hashtable>> {
         private Exception asyncTaskError = null;
 
         @Override
-        protected ArrayList<String> doInBackground(Set<Entry<String, Integer>>... fileSets) {
+        protected ArrayList<Hashtable> doInBackground(Set<Entry<String, Integer>>... fileSets) {
             Set<Entry<String, Integer>> fileNames = fileSets[0];
-            ArrayList<String> al = new ArrayList<String>();
+            ArrayList<Hashtable> al = new ArrayList<Hashtable>();
             try {
                 Iterator<Entry<String, Integer>> i = fileNames.iterator();
                 Bitmap bmp;
@@ -531,6 +538,22 @@ public class MultiImageChooserActivity extends AppCompatActivity implements
                     Entry<String, Integer> imageInfo = i.next();
                     File file = new File(imageInfo.getKey());
                     File originalFile = new File(imageInfo.getKey());
+
+                    //read exif
+                    ExifInterface exif = new ExifInterface(imageInfo.getKey());
+                    String dateTime = exif.getAttribute(ExifInterface.TAG_DATETIME);
+                    String creationDate = "";
+                    if (dateTime != null) {
+                        DateFormat df = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+                        try {
+                            Date date = df.parse(dateTime);
+                            long time = date.getTime();
+                            creationDate = String.valueOf(time);
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                     int rotate = imageInfo.getValue();
                     BitmapFactory.Options options = new BitmapFactory.Options();
@@ -586,11 +609,17 @@ public class MultiImageChooserActivity extends AppCompatActivity implements
                         String ext = file.getName().substring(index);
                         file = storeImage(bmp, System.currentTimeMillis() + ext);
                         copyExifData(originalFile.getAbsolutePath(), file.getAbsolutePath());
-                        al.add(Uri.fromFile(file).toString());
-                        
+                        Hashtable map = new Hashtable<String, String>();
+                        map.put("image", Uri.fromFile(file).toString());
+                        map.put("creationDate", creationDate);
+
+                        al.add(map);
 
                     } else if (outputType == OutputType.BASE64_STRING) {
-                        al.add(getBase64OfImage(bmp));
+                        Hashtable map = new Hashtable<String, String>();
+                        map.put("image", getBase64OfImage(bmp));
+                        map.put("creationDate", creationDate);
+                        al.add(map);
                     }
                 }
                 bmp =null;
@@ -600,19 +629,19 @@ public class MultiImageChooserActivity extends AppCompatActivity implements
                 try {
                     asyncTaskError = e;
                     for (int i = 0; i < al.size(); i++) {
-                        URI uri = new URI(al.get(i));
+                        URI uri = new URI((String) al.get(i).get("image"));
                         File file = new File(uri);
                         file.delete();
                     }
                 } catch (Exception ignore) {
                 }
 
-                return new ArrayList<String>();
+                return new ArrayList<Hashtable>();
             }
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> al) {
+        protected void onPostExecute(ArrayList<Hashtable> al) {
             Intent data = new Intent();
 
             if (asyncTaskError != null) {
@@ -623,7 +652,8 @@ public class MultiImageChooserActivity extends AppCompatActivity implements
 
             } else if (al.size() > 0) {
                 Bundle res = new Bundle();
-                res.putStringArrayList("MULTIPLEFILENAMES", al);
+                JSONArray json = new JSONArray(al);
+                res.putString("MULTIPLEFILENAMES", json.toString());
 
                 if (imagecursor != null) {
                     res.putInt("TOTALFILES", imagecursor.getCount());

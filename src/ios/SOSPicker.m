@@ -177,12 +177,18 @@ typedef enum : NSUInteger {
     NSString* filePath;
     CDVPluginResult* result = nil;
 
+    NSString* creationDate = @"";
+    
     for (GMFetchItem *item in fetchArray) {
 
         if ( !item.image_fullsize ) {
             continue;
         }
 
+        if (item.creationDate){
+            creationDate = [NSString stringWithFormat:@"%0.f",[item.creationDate timeIntervalSince1970] * 1000];
+        }
+        
         do {
             filePath = [NSString stringWithFormat:@"%@/%@.%@", libPath, [[NSUUID UUID] UUIDString], @"jpg"];
         } while ([fileMgr fileExistsAtPath:filePath]);
@@ -192,11 +198,13 @@ typedef enum : NSUInteger {
             // no scaling required
             if (self.outputType == BASE64_STRING){
                 UIImage* image = [UIImage imageNamed:item.image_fullsize];
-                [result_all addObject:[UIImageJPEGRepresentation(image, self.quality/100.0f) base64EncodedStringWithOptions:0]];
+                [result_all addObject:@{@"image":[UIImageJPEGRepresentation(image, self.quality/100.0f) base64EncodedStringWithOptions:0],
+                                        @"creationDate":creationDate}];
             } else {
                 if (self.quality == 100) {
                     // no scaling, no downsampling, this is the fastest option
-                    [result_all addObject:item.image_fullsize];
+                    [result_all addObject:@{@"image":item.image_fullsize,
+                                            @"creationDate":creationDate}];
                    
                 } else {
                     // resample first
@@ -206,7 +214,8 @@ typedef enum : NSUInteger {
                         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageAsString:[err localizedDescription]];
                         break;
                     } else {
-                        [result_all addObject:[[NSURL fileURLWithPath:filePath] absoluteString]];
+                        [result_all addObject:@{@"image":[[NSURL fileURLWithPath:filePath] absoluteString],
+                                                @"creationDate":creationDate}];
                     }
                 }
             }
@@ -221,9 +230,11 @@ typedef enum : NSUInteger {
                 break;
             } else {
                 if(self.outputType == BASE64_STRING){
-                    [result_all addObject:[data base64EncodedStringWithOptions:0]];
+                    [result_all addObject:@{@"image":[data base64EncodedStringWithOptions:0],
+                                            @"creationDate":creationDate}];
                 } else {
-                    [result_all addObject:[[NSURL fileURLWithPath:filePath] absoluteString]];
+                    [result_all addObject:@{@"image":[[NSURL fileURLWithPath:filePath] absoluteString],
+                                            @"creationDate":creationDate}];
                 }
             }
         }
